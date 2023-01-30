@@ -7,7 +7,10 @@ const config = {
       colors: tailwindcssPaletteGenerator({
         colors: ['#3a41cb', '#1c78e9', '#76778f'],
         names: ['primary', 'secondary', 'gray']
-      })
+      }),
+      fontFamily: {
+        sans: ['Montserrat', 'sans-serif']
+      }
     }
   },
 
