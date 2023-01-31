@@ -2,7 +2,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import jwt from 'jsonwebtoken';
 import * as db from '$db';
 import { JWT_SECRET } from '$env/static/private';
-import { protectedLinks } from '$routes';
+import { protectedRoutes } from '$routes';
 
 const verifyAuthToken = async ({ event }) => {
   // get authToken cookie
@@ -36,13 +36,16 @@ const verifyAuthToken = async ({ event }) => {
 
 const protectedRoutesHandle = async ({ event, resolve }) => {
   // initialize protected routes
-  const protectedRoutes = protectedLinks.map(({ href }) => href);
+  const routes = protectedRoutes.map(({ href }) => href);
 
   // check if route is protected
-  if (protectedRoutes.includes(event.url.pathname)) {
+  if (routes.includes(event.url.pathname)) {
     try {
       // verify authToken
       const user = await verifyAuthToken({ event });
+
+      // confirm user is active
+      if (!user.isActive) throw 'User is not active';
 
       // set user locals
       event.locals.user = user;
@@ -83,7 +86,7 @@ const rootRouteHandle = async ({ event, resolve }) => {
       event.locals.user = user;
 
       // redirect to dashboard
-      return Response.redirect(`${event.url.origin}/dashboard`, 301);
+      return Response.redirect(`${event.url.origin}${user.redirectSignIn}`, 301);
     } catch (error) {
       console.log({ error });
 

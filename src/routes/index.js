@@ -1,1 +1,1 @@
-export const protectedLinks = ['/dashboard'];
+export const protectedRoutes = [{ href: '/dashboard' }];

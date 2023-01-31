@@ -1,14 +1,33 @@
 <script>
   import { theme } from 'sveltewind/stores';
+  import { page } from '$app/stores';
   import { Pwa } from '$components';
   import '../app.postcss';
 
   theme.set({
-    button: 'bg-primary-500 hover:bg-primary-600 focus:bg-primary-600 focus:ring-primary-600/[.3]',
-    h1: 'text-[2.5rem]',
+    button:
+      'cursor-pointer bg-primary-500 hover:bg-primary-600 focus:bg-primary-600 focus:ring-primary-600/[.3]',
+    h1: 'font-semibold text-[2.5rem]',
+    h2: 'font-semibold text-[2rem]',
     input:
       'bg-transparent dark:bg-transparent hover:ring-offset-primary-500 focus:ring-offset-primary-500 focus:ring-primary-500/[.3]'
   });
+
+  $: title = [
+    ...$page.url.pathname
+      .substring(1)
+      .split('/')
+      .map((directory) => {
+        const words = directory
+          .split('-')
+          .map((word) =>
+            word.length === 3 ? word.toUpperCase() : word.charAt(0).toUpperCase() + word.slice(1)
+          );
+        return words.join(' ');
+      }),
+    'ABES',
+    'Allen Baily Tag & Label'
+  ].join(' - ');
 </script>
 
 <Pwa>
@@ -24,6 +43,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 </Pwa>
+
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
 
 <slot />
 
